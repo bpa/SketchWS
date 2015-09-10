@@ -1,5 +1,7 @@
 # SketchWS
 
-    $ sudo apt-get install python-pip python-pythonmagick potrace
+    $ sudo apt-get install python-pip imagemagick potrace
     $ pip install bottle
-    $ ./server_ws.py
+    $ sudo mkdir /usr/local/SketchWS
+    $ sudo chown $USER /usr/local/SketchWS
+    $ ./sketch_ws.py
