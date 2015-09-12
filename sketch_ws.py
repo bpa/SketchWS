@@ -46,6 +46,8 @@ def convert_to_sketch(path, ext):
   call("convert %s/0.png -edge 3 -normalize -negate %s/e.png" % (path, path), shell=True)
   call("convert %s/0.png -sketch 0x20+120 %s/s.png" % (path, path), shell=True)
   call("composite -compose darken %s/e.png %s/s.png %s/1.pgm" % (path, path, path), shell=True)
-  call("potrace -t 1 -s %s/1.pgm" % path, shell=True)
+  call("potrace -t 2 -p %s/1.pgm" % path, shell=True)
+  call("pstoedit -f gcode %s/1.ps %s/sketch.gcode" % (path, path), shell=True)
+  call("convert -resize 128x128 %s/1.ps %s/thumb.png" % (path, path), shell=True)
 
 run()
