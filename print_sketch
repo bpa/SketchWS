@@ -1,0 +1,3 @@
+#! /bin/sh
+
+echo "You might want to replace this with a script that prints $1"
