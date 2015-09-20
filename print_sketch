@@ -1,3 +1,7 @@
 #! /bin/sh
 
-echo "You might want to replace this with a script that prints $1"
+echo 2
+echo "Step one"
+sleep 2
+echo "Step two"
+sleep 2
