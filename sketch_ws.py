@@ -36,8 +36,7 @@ def sketch_file(name, filename):
 
 @app.route('/upload', method='POST')
 def upload():
-    print "upload"
-    global sketches
+    global sketch
     img = request.files.get('img')
     name, ext = os.path.splitext(img.filename)
     path = "sketches/%s" % (name)
@@ -46,8 +45,12 @@ def upload():
     except:
       pass
     img.save("%s/base%s" % (path, ext), overwrite=True)
-    command_with_status("./convert_to_sketch %s %s" % (name, ext))
-    sketches[name] = ext
+    sketch[name] = ext
+    return { "name": name, "ext": ext }
+
+@app.route('/convert')
+def convert():
+    command_with_status("./convert_to_sketch")
 
 @app.route('/print')
 def print_it():
@@ -75,5 +78,4 @@ from gevent.pywsgi import WSGIServer
 from geventwebsocket import WebSocketError
 from geventwebsocket.handler import WebSocketHandler
 server = WSGIServer(("0.0.0.0", 8080), app, handler_class=WebSocketHandler, log=sys.stderr)
-app.debug = True
 server.serve_forever()

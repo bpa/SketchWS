@@ -2,16 +2,15 @@
 <html ng-app="SketchWS">
   <head>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-animate.js"></script>
     <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.4.js"></script>
     <script src="app.js"></script>
   </head>
   <body ng-controller="SketchCtrl">
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name="img"/>
-      <button class="btn btn-primary">Upload</button>
-    </form>
+    <input style="display:none" type="file" id="img" onchange="angular.element(this).scope().do_upload(this)"/>
+    <button class="btn btn-primary" ng-click="initiate_upload()">Upload new sketch</button>
     <table class="table table-hover table-striped">
         <tr><th>Original</th><th>Sketch</th><th>Actions</th></tr>
         <tr ng-repeat="s in sketches">

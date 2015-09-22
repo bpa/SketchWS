@@ -1,20 +1,38 @@
 angular.module('SketchWS',['ngAnimate','ui.bootstrap']).controller('SketchCtrl', function($scope, $http) {
     $http.get('/sketch').then(function(res) {
-        console.log(res);
         $scope.sketches = Object.keys(res.data).sort().map(function(s) {
             return { name: s, ext: res.data[s], w: false }
         });
-        
-        console.log($scope.sketches);
     });
 
-    $scope.upload = function(sketch) {
-        var ws = new WebSocket("ws://localhost:8080/upload");
+    $scope.initiate_upload = function() {
+        angular.element(document.querySelector('#img'))[0].click();
+    };
+
+    $scope.do_upload = function(f) {
+        var formData = new FormData();
+        formData.append('img', f.files[0]);
+        jQuery.ajax({
+           url : '/upload',
+           type : 'POST',
+           data : formData,
+           processData: false,
+           contentType: false,
+           success : function(data) {
+             console.log(data);
+             $scope.sketches.push(data);
+             var ws = new WebSocket("ws://localhost:8080/convert");
+             show_progress(ws, data);
+           }
+        });
     };
 
     $scope.print = function(sketch) {
-        console.log("Printing " + sketch);
         var ws = new WebSocket("ws://localhost:8080/print");
+        show_progress(ws, sketch);
+    };
+
+    function show_progress(ws, sketch) {
         ws.onopen = function() {
             ws.send(sketch.name);
         };
@@ -32,7 +50,6 @@ angular.module('SketchWS',['ngAnimate','ui.bootstrap']).controller('SketchCtrl',
             console.log(msg.data);
         };
         ws.onclose = function() {
-            console.log("printed");
             sketch.w = false;
             $scope.$apply();
         };
