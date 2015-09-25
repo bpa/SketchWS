@@ -1,6 +1,6 @@
 #! /bin/sh
 
-echo 6
+echo 16
 cd sketches/$1
 base=`ls base*`
 echo $base
@@ -10,12 +10,22 @@ convert $base -resize 128x128 orig.png
 echo "Converting to grayscale"
 convert -alpha off $base -set colorspace Gray -separate -average -normalize 0.png
 echo "Drawing outlines"
-convert 0.png -negate -blur 12 -fuzz 15% -edge 3 -negate -white-threshold 60% e.png
+convert 0.png -negate -edge 2 -negate -normalize -blur 0x.5 -contrast-stretch 0x50% -white-threshold 60% e.png
 echo "Drawing crosshatch"
-convert 0.png -white-threshold 50% -sketch 0x20+120 s.png
+convert 0.png -fill white -colorize 10% -white-threshold 25% -sketch 0x20+120 s.png
 echo "Combining images"
 composite -compose darken e.png s.png 1.pgm
+echo "Creating preview image"
+convert 1.pgm sketch.png
 echo "Creating sketch thumbnail"
-convert -resize 128x128 1.pgm sketch.png
-#potrace -t 1 -p 1.pgm
-#pstoedit -f gcode 1.ps sketch.gcode
+convert -resize 128x128 1.pgm thumb.png
+echo "Segmenting image"
+convert 1.pgm -crop 25%x100% +repage %d.pgm
+for i in `seq 0 3`;
+do
+    s=$(($i + 1))
+    echo "Vectorizing $s/4"
+    potrace -t 1 -p $i.pgm
+    echo "Generating gcode for chunk $s/4"
+    pstoedit -f gcode $i.ps $i.gcode
+done

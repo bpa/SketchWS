@@ -7,6 +7,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-animate.js"></script>
     <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.4.js"></script>
     <script src="app.js"></script>
+    <script type="text/ng-template" id="img.html">
+        <img ng-src="/sketches/{{s.name}}/{{img}}.png">{{s|json}}
+    </script>
   </head>
   <body ng-controller="SketchCtrl">
     <input style="display:none" type="file" id="img" onchange="angular.element(this).scope().do_upload(this)"/>
@@ -14,8 +17,8 @@
     <table class="table table-hover table-striped">
         <tr><th>Original</th><th>Sketch</th><th>Actions</th></tr>
         <tr ng-repeat="s in sketches">
-            <td class="col-sm-4"><img ng-src="/sketch/{{s.name}}/orig.png"></td>
-            <td class="col-sm-4"><img ng-src="/sketch/{{s.name}}/sketch.png"></td>
+            <td class="col-sm-4"><img ng-src="/sketch/{{s.name}}/orig.png" ng-click="show_full_size(s, 'orig')"></td>
+            <td class="col-sm-4"><img ng-src="/sketch/{{s.name}}/thumb.png" ng-click="show_full_size(s, 'sketch')"></td>
             <td class="col-sm-4" ng-if="!s.w">
                 <span class="glyphicon glyphicon-print" aria-hidden="true" ng-click="print(s)"></span>
                 <span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="delete(s)"></span>

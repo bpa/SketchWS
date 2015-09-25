@@ -1,4 +1,4 @@
-angular.module('SketchWS',['ngAnimate','ui.bootstrap']).controller('SketchCtrl', function($scope, $http) {
+angular.module('SketchWS',['ngAnimate','ui.bootstrap']).controller('SketchCtrl', function($scope, $http, $modal) {
     $http.get('/sketch').then(function(res) {
         $scope.sketches = Object.keys(res.data).sort().map(function(s) {
             return { name: s, ext: res.data[s], w: false }
@@ -20,7 +20,7 @@ angular.module('SketchWS',['ngAnimate','ui.bootstrap']).controller('SketchCtrl',
            contentType: false,
            success : function(data) {
              console.log(data);
-             $scope.sketches.push(data);
+             $scope.sketches.unshift(data);
              var ws = new WebSocket("ws://localhost:8080/convert");
              show_progress(ws, data);
            }
@@ -30,6 +30,13 @@ angular.module('SketchWS',['ngAnimate','ui.bootstrap']).controller('SketchCtrl',
     $scope.print = function(sketch) {
         var ws = new WebSocket("ws://localhost:8080/print");
         show_progress(ws, sketch);
+    };
+
+    $scope.show_full_size = function(s, img) {
+        var modal = $modal.open({
+            templateUrl: 'img.html',
+            resolve: {s: function() { return s;}}
+        });
     };
 
     function show_progress(ws, sketch) {
